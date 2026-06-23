@@ -1,0 +1,6 @@
+__pycache__/
+*.pyc
+.env
+~/.mk-api-key
+*.log
+.DS_Store

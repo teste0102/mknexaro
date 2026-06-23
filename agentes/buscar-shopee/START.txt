@@ -1,0 +1,181 @@
+╔════════════════════════════════════════════════════════════════════════════╗
+║              🛍️  BUSCAR SHOPEE - SISTEMA DE COLETA E COMPARAÇÃO            ║
+║                                                                            ║
+║                     ✅ PRONTO PARA USAR - GUIA RÁPIDO                      ║
+╚════════════════════════════════════════════════════════════════════════════╝
+
+📍 LOCALIZAÇÃO
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+  Skill: ~/.claude/skills/buscar-shopee/
+  Dados: ~/dados_produtos/
+
+
+🚀 MODO MAIS FÁCIL - Menu Interativo
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+
+  cd ~/.claude/skills/buscar-shopee
+  python3 run.py
+
+  Depois escolha a opção no menu! 📋
+
+
+📋 PASSO A PASSO - Modo Manual
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+
+PASSO 1: Criar Template Excel
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+  cd ~/.claude/skills/buscar-shopee
+  python3 criar_excel_coleta.py "tela A15 4g"
+
+  ✅ Cria arquivo em: ~/dados_produtos/shopee/20260621_HHMMSS_tela_A15_4g.xlsx
+
+
+PASSO 2: Coletar Dados Manualmente
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+  1. Abra: https://shopee.com.br/search?keyword=tela+A15+4g
+
+  2. Pressione F12 (DevTools)
+
+  3. Vá para Console
+
+  4. Cole este script:
+
+     ▼ SCRIPT PARA COLETAR (cole no console) ▼
+     ─────────────────────────────────────────
+     const produtos = [];
+     document.querySelectorAll('a[href*="/p/"]').forEach((link) => {
+         const titulo = link.getAttribute('title') || link.innerText;
+         if (titulo.length > 5) {
+             produtos.push({
+                 titulo: titulo.trim(),
+                 preco: 'R$ ...',  // você preenche
+                 desconto: '',
+                 avaliacao: 'N/A',
+                 vendas: 'N/A',
+                 url: link.href,
+                 fonte: 'Shopee',
+                 pasta: 'shopee',
+                 imagem: ''
+             });
+         }
+     });
+     copy(JSON.stringify(produtos, null, 2));
+     console.log('✅ Copiado!');
+     ─────────────────────────────────────────
+
+  5. Pressione Enter
+
+  6. Cole o resultado em um arquivo .json
+
+
+PASSO 3: Abrir Excel e Preencher
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+  1. Abra o Excel criado no Passo 1
+
+  2. Cole os dados que copiou
+
+  3. Complete as colunas:
+     - Título ✅ (do script)
+     - Preço ✅ (complete manualmente)
+     - Desconto (opcional)
+     - Avaliação (você vê na página)
+     - Vendas (você vê na página)
+     - URL ✅ (do script)
+     - Fonte: Shopee
+     - Pasta: shopee
+     - Imagem (opcional)
+
+  4. Salve o arquivo
+
+
+PASSO 4: Comparar Preços
+━━━━━━━━━━━━━━━━━━━━━━━━
+  cd ~/.claude/skills/buscar-shopee
+  python3 comparador.py
+
+  OU use nosso wrapper:
+  python3 run.py comparar "tela A15 4g"
+
+
+📊 EXEMPLO
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+
+  Já existe um exemplo de dados em:
+  ~/dados_produtos/shopee_exemplo/exemplo_dados.xlsx
+
+  Copie para a pasta shopee/ para testar o comparador!
+
+
+📁 ESTRUTURA DE PASTAS
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+
+  ~/dados_produtos/
+  ├── shopee/                    ← Seus dados coletados da Shopee
+  │   ├── 20260621_110000_tela_A15_4g.xlsx
+  │   └── ...
+  ├── mercado_livre/             ← Dados de outras fontes (opcional)
+  │   └── 20260621_110000_tela_A15_4g.xlsx
+  └── saida_comparacao/          ← Resultados gerados
+      └── 20260621_110000_tela_A15_4g.xlsx
+
+
+🔍 COMPARADOR FAZ ISSO
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+
+  ✅ Lê todos os Excels de todas as pastas
+  ✅ Filtra pelo termo procurado
+  ✅ Compara preços
+  ✅ Ordena do mais barato para o mais caro
+  ✅ Coloriza por fonte
+  ✅ Destaca o melhor preço em VERDE
+  ✅ Converte URLs em hyperlinks clicáveis
+  ✅ Gera Excel formatado e pronto para usar
+
+
+📖 DOCUMENTAÇÃO COMPLETA
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+
+  README.md      → Visão geral e comandos
+  GUIA_COLETA.md → Passo a passo detalhado
+
+
+💡 DICAS
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+
+  ✓ Coletar de várias fontes (Shopee, Mercado Livre, Olist, etc.)
+  ✓ Cada fonte em uma pasta separada
+  ✓ O comparador processa tudo automaticamente
+  ✓ Nomes de arquivo: YYYYMMDD_HHMMSS_produto.xlsx
+  ✓ Role a página antes de coletar (alguns produtos só carregam com scroll)
+
+
+❓ PERGUNTAS FREQUENTES
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+
+P: Por que não é automático?
+R: Shopee tem proteção contra bots. Coleta manual é 100% confiável.
+
+P: Posso coletar de outras fontes?
+R: SIM! Crie pastas (mercado_livre/, olist/, etc.) e o comparador processa.
+
+P: Quantos produtos posso coletar?
+R: Ilimitado. Quanto mais scroll, mais produtos carregam na Shopee.
+
+P: Os dados são salvos?
+R: Sim! Tudo fica em ~/dados_produtos/ para análise futura.
+
+P: Posso editar os dados depois?
+R: SIM! Abra qualquer Excel e edite. Comparador usa a versão mais recente.
+
+
+🎉 PRONTO!
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+
+  Comece com:
+  python3 run.py
+
+  Escolha opção 1 para criar seu primeiro template!
+
+╔════════════════════════════════════════════════════════════════════════════╗
+║                    Sistema pronto para comparar preços! 🚀                  ║
+╚════════════════════════════════════════════════════════════════════════════╝
