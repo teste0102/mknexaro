@@ -6,27 +6,22 @@ import requests
 app = Flask(__name__)
 
 APIS = {
-    'email': 'http://localhost:8100',
+    'email': 'http://localhost:8764',      # Email Cleanup ORIGINAL
     'loja': 'http://localhost:8101',
     'github': 'http://localhost:8102'
 }
 
 @app.route('/status', methods=['GET'])
 def status():
-    return jsonify({
-        'integrador': 'central',
-        'porta': 8110,
-        'apis_conectadas': APIS
-    })
+    return jsonify({'integrador': 'central', 'porta': 8110, 'apis_conectadas': APIS})
 
 @app.route('/executar', methods=['POST'])
 def executar():
-    """Haiku chama isso para gerenciar tudo"""
     dados = request.json
     comando = dados.get('comando', '').lower()
     
     if 'email' in comando:
-        resp = requests.get(f"{APIS['email']}/status")
+        resp = requests.post(f"{APIS['email']}/api/gmail/analisar", json={})
         return jsonify({'tipo': 'email', 'resultado': resp.json()})
     
     elif 'loja' in comando or 'os' in comando:
